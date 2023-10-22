@@ -170,9 +170,14 @@ if st.button('Predict'):
         feature68,
         feature69,
         feature70 ]
-        
-    prediction = model.predict([data])[0]
-    st.write(f'Predicted Rating: {prediction:.2f}')
+    
+print(f"Model Type: {type(model)}")
+print(f"Data Type: {type(data)}")
+print(f"Data Shape: {len(data)}")
+
+prediction = model.predict([data])[0]
+
+st.write(f'Predicted Rating: {prediction:.2f}')
 
 
 
