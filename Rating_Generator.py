@@ -3,8 +3,12 @@ import pickle
 
 # Loading our pre-trained model
 
-with open('C:/Users/skabs/OneDrive/Desktop/Assignment/FIFA PRED MIDSEM PROJ/FIFA PRED MIDSEM PROJ/FIFA_Rating_Generator', 'rb') as model_file:
-    model = pickle.load(model_file)
+try:
+    with open('FIFA_Rating_Generator.pkl', 'rb') as model_file:
+        model = pickle.load(model_file)
+except Exception as e:
+    st.error(f"An error occurred: {str(e)}")
+
 
 # Creating a Streamlit app
 st.title('FIFA Player Rating Prediction')
