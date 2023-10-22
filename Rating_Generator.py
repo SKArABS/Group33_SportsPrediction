@@ -1,6 +1,5 @@
 import streamlit as st
 import pickle
-from sklearn.ensemble import RandomForestRegressor  # Example: importing a regressor model
 from sklearn.metrics import mean_squared_error
 
 # Loading our pre-trained model
