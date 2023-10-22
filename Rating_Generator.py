@@ -4,7 +4,7 @@ import pickle
 # Loading our pre-trained model
 
 try:
-    with open('FIFA_Rating_Generator.pkl', 'rb') as model_file:
+    with open('"C:\Users\skabs\OneDrive\Desktop\Assignment\FIFA PRED MIDSEM PROJ\FIFA PRED MIDSEM PROJ\FIFA_Rating_Generator.pkl', 'rb') as model_file:
         model = pickle.load(model_file)
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
@@ -171,9 +171,6 @@ if st.button('Predict'):
         feature69,
         feature70 ]
     
-print(f"Model Type: {type(model)}")
-print(f"Data Type: {type(data)}")
-print(f"Data Shape: {len(data)}")
 
 prediction = model.predict([data])[0]
 
