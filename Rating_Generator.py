@@ -1,5 +1,8 @@
 import streamlit as st
 import pickle
+from sklearn.model_selection import train_test_split  # For splitting data into train and test sets
+from sklearn.ensemble import RandomForestRegressor  # Example: importing a regressor model
+from sklearn.metrics import mean_squared_error
 
 # Loading our pre-trained model
 
