@@ -59,9 +59,16 @@ feature37 = st.slider('defending', min_value=0.0, max_value=100.0, step=0.1)
 feature38 = st.slider('dribbling', min_value=0.0, max_value=100.0, step=0.1)
 feature39 = st.slider('passing', min_value=0.0, max_value=100.0, step=0.1)
 feature40 = st.slider('shooting', min_value=0.0, max_value=100.0, step=0.1)
-feature42 = st.slider('international_reputation', min_value=0.0, max_value=5, step=0.1)
-feature45 = st.slider('weak_foot', min_value=0.0, max_value=6, step=0.1)
+
+feature41 = st.slider('release_clause_eur', min_value=0.0, max_value=100.0, step=0.1)
+feature42 = st.slider('international_reputation', min_value=0.0, max_value=100.0, step=0.1)
+feature43 = st.slider('wage_eur ', min_value=0.0, max_value=100.0, step=0.1)
+feature44 = st.slider('value_eur', min_value=0.0, max_value=100.0, step=0.1)
+
+feature45 = st.slider('weak_foot', min_value=0.0, max_value=100.0, step=0.1)
+feature46 = st.slider('age', min_value=0.0, max_value=100.0, step=0.1)
 feature47 = st.slider('potential', min_value=0.0, max_value=100.0, step=0.1)
+
 feature48 = st.slider('attacking_finishing', min_value=0.0, max_value=100.0, step=0.1)
 feature49 = st.slider('attacking_heading_accuracy', min_value=0.0, max_value=100.0, step=0.1)
 feature50 = st.slider('attacking_short_passing', min_value=0.0, max_value=100.0, step=0.1)
