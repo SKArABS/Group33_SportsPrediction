@@ -2,7 +2,7 @@ import streamlit as st
 import pickle
 
 # Loading our pre-trained model
-with open('FIFA_Rating_Generator.pkl', 'rb') as model_file:
+with open('https://github.com/SKArABS/Group33_SportsPrediction/blob/main/.gitattributes', 'rb') as model_file:
     model = pickle.load(model_file)
 
 # Creating a Streamlit app
