@@ -130,15 +130,10 @@ pd.set_option('display.max_rows', 100)  # To display all correlations
 p21_correlation['overall'].sort_values()
 
 # %%
-p21_corr_df = pd.DataFrame(p21_correlation['overall'].sort_values())
-p21_corr_df = p21_corr_df.transpose()
-p21_corr_df
+chosen_columns = ['overall', 'release_clause_eur', 'value_eur', 'movement_reactions', 'wage_eur', 'mentality_composure','passing','dribbling','potential','mentality_vision','age','shooting','mentality_positioning','power_stamina','movement_agility']
 
 # %%
-threshold = 0.2
-columns_to_drop = [col for col in corr_df.columns if (corr_df[col] < threshold).any()]
-columns_to_drop
-p21_refined_scaled_df.drop(columns_to_drop, axis = 1, inplace=True)
+p21_refined_scaled_df = p21_refined_scaled_df[chosen_columns]
 p21_refined_scaled_df
 
 # %% [markdown]
@@ -174,7 +169,7 @@ knn_regressor = KNeighborsRegressor(n_neighbors=5)  # You can adjust the number 
 # Create a VotingRegressor using the individual models
 voting_regressor = VotingRegressor(estimators=[('SupportVector', svr),
                                               ('linear_regression', lr),
-                                              ('knn', knn_regressor)])
+                                              ('knn', knn_regressor)], n_jobs=-1)
 
 # Train the VotingRegressor on the training data
 voting_regressor.fit(X_train, y_train)
@@ -188,7 +183,7 @@ from sklearn.model_selection import cross_val_score
 
 # %%
 #Performing cross-validation on the model
-scores = cross_val_score(voting_regressor, X, y, cv=5, scoring='neg_mean_squared_error')
+scores = cross_val_score(voting_regressor, X, y, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
 
 # Calculate the mean and standard deviation of the scores
 mean_score = scores.mean()
@@ -203,21 +198,32 @@ print("Standard Deviation: ", std_score)
 
 # %%
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV
 # Split the data into a training set and a test set
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Create a Random Forest Regressor
-RFR = RandomForestRegressor(n_estimators=500, random_state=42)  # You can adjust hyperparameters
+RFR = RandomForestRegressor()
+#Defining paramaters
+PARAMETERS = {
+"max_depth":[2,5, 6, 12],
+"n_estimators":[100,200,500,1000]
+}
+model_rfr = GridSearchCV(RFR, param_grid = PARAMETERS, n_jobs = -1)
 
+# %%
 # Train the model on the training data
-RFR.fit(X_train, y_train)
+model_rfr.fit(X_train, y_train)
 
 # Make predictions on the test set
-y_pred = RFR.predict(X_test)
+y_pred = model_rfr.predict(X_test)
+
+# %%
+model_rfr.best_estimator_
 
 # %%
 #Performing cross-validation on the model
-scores = cross_val_score(RFR, X, y, cv=5, scoring='neg_mean_squared_error')
+scores = cross_val_score(model_rfr, X, y,cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
 
 # Calculate the mean and standard deviation of the scores
 mean_score = scores.mean()
@@ -230,19 +236,30 @@ print("Standard Deviation: ", std_score)
 # %%
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
+
+cv=KFold(n_splits=3)
+PARAMETERS ={
+"max_depth":[2,5, 6, 12],
+"learning_rate":[0.5, 0.3, 0.05, 0.01],
+"n_estimators":[100,200,500, 1000]}
 
 # Create a Gradient Boosting Regressor
-gbr = GradientBoostingRegressor(init=svr, n_estimators=500, learning_rate=0.1, max_depth=3)
+gbr = GradientBoostingRegressor()
+model_gbr = GridSearchCV(gbr,param_grid=PARAMETERS,cv=cv)
 
 # Train the model on the training data
-gbr.fit(X_train, y_train)
+model_gbr.fit(X_train, y_train)
 
 # Make predictions on the test set
-y_pred = gbr.predict(X_test)
+y_pred = model_gbr.predict(X_test)
+
+# %%
+model_gbr.best_estimator_
 
 # %%
 #Performing cross-validation on the model
-scores = cross_val_score(gbr, X, y, cv=5, scoring='neg_mean_squared_error')
+scores = cross_val_score(model_gbr, X, y, cv=5, scoring='neg_mean_squared_error')
 
 # Calculate the mean and standard deviation of the scores
 mean_score = scores.mean()
@@ -339,12 +356,12 @@ from sklearn.ensemble import RandomForestRegressor
 X_test = p22_refined_scaled_df.drop(['overall'], axis = 1)
 
 # Make predictions on the test set
-y_pred = RFR.predict(X_test)
+y_pred = model_gbr.predict(X_test)
 
 
 # %%
 #Performing cross-validation on the model
-scores = cross_val_score(RFR, X, y, cv=5, scoring='neg_mean_squared_error')
+scores = cross_val_score(model_rfr, X, y, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
 
 # Calculate the mean and standard deviation of the scores
 mean_score = scores.mean()
@@ -358,12 +375,17 @@ print("Standard Deviation: ", std_score)
 # **Saving the model**
 
 # %%
+#From testing, we've decided to go with model_rfr, the Random Forest Regressor.
 import pickle
 
 
 # %%
 with open('FIFA_Rating_Generator.pkl', 'wb') as file:
-    pickle.dump(RFR, file)
+    pickle.dump(model_gbr, file)
 
+
+# %%
+with open('scaler.pkl', 'wb') as file:
+    pickle.dump(scaler, file)
 
 
